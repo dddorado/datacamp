@@ -51,14 +51,14 @@ hist(msleep$sleep_total)
 One way we could summarize the data is by answering the question, How long do mammals in this dataset typically sleep? To answer this, we need to figure out what the "typical" or "center" value of the data is. We'll discuss three different definitions, or measures, of center: mean, median, and mode.
 
 ## Measures of center: mean
-The mean, often called the average, is one of the most common ways of summarizing data. To calculate mean, we add up all the numbers of interest and divide by the total number of data points, which is 83 here. This gives us 10-point-43 hours of sleep. In R, we can use the mean function, passing it the variable of interest.
+The mean, often called the average, is one of the most common ways of summarizing data. To calculate mean, we add up all the numbers of interest and divide by the total number of data points, which is 83 here. This gives us 10-point-43 hours of sleep. In R, we can use the `mean` function, passing it the variable of interest.
 
 ```{r}
 mean(msleep$sleep_total)
 ```
 
 ## Measures of center: median
-Another measure of center is the median. The median is the value where 50% of the data is lower than it, and 50% of the data is higher. We can calculate this by sorting all the data points and taking the middle one, which would be index 42 in this case. This gives us a median of 10.1 hours of sleep. In R, we can use the median function to do the calculations for us.
+Another measure of center is the median. The median is the value where 50% of the data is lower than it, and 50% of the data is higher. We can calculate this by sorting all the data points and taking the middle one, which would be index 42 in this case. This gives us a median of 10.1 hours of sleep. In R, we can use the `median` function to do the calculations for us.
 
 ```{r}
 sort(msleep$sleep_total)
@@ -73,7 +73,7 @@ median(msleep$sleep_total)
 ```
 
 ## Measures of center: mode
-The mode is the most frequent value in the data. If we count how many occurrences there are of each sleep_total and sort in descending order, there are 4 mammals that sleep for 12.5 hours, so this is the mode. The mode of the vore variable, which indicates the animal's diet, is herbivore. Mode is often used for categorical variables, since categorical variables can be unordered and often don't have an inherent numerical representation.
+The mode is the most frequent value in the data. If we count how many occurrences there are of each sleep_total and sort in descending order, there are 4 mammals that sleep for 12.5 hours, so this is the mode. The mode of the `vore` variable, which indicates the animal's diet, is herbivore. Mode is often used for categorical variables, since categorical variables can be unordered and often don't have an inherent numerical representation.
 
 ```{r}
 msleep %>% count(sleep_total, sort = TRUE)
@@ -82,6 +82,111 @@ msleep %>% count(sleep_total, sort = TRUE)
 ```{r}
 msleep %>% count(vore, sort = TRUE)
 ```
+
+## Measures of spread
+In this lesson, we'll talk about another set of summary statistics: measures of spread.
+
+## What is spread?
+Spread is just what it sounds like - it describes how spread apart or close together the data points are. Just like measures of center, there are a few different measures of spread.
+
+## Variance
+The first measure, variance, measures the average distance from each data point to the data's mean.
+
+To calculate the variance, we start by calculating the distance between each point and the mean, so we get one number for every data point.
+
+```{r}
+dists <- msleep$sleep_total - mean(msleep$sleep_total)
+dists
+```
+
+We then square each distance and then add them all together.
+
+```{r}
+squared_dists <- (dists)^2
+sum_squared_dists <- sum(squared_dists)
+sum_squared_dists
+```
+
+Finally, we divide the sum of squared distances by the number of data points minus 1, giving us the variance. The higher the variance, the more spread out the data is. It's important to note that the units of variance are squared, so in this case, it's 19.8 hours squared. We can calculate the variance in one step using the `var` function.
+
+```{r}
+sum_squared_dists/82
+```
+
+```{r}
+var(msleep$sleep_total)
+```
+
+## Standard deviation
+The standard deviation is another measure of spread, calculated by taking the square root of the variance. It can also be calculated using the `sd` function. The nice thing about standard deviation is that the units are usually easier to understand since they're not squared. It's easier to wrap your head around 4 and a half hours than 19.8 hours squared.
+
+```{r}
+sqrt(var(msleep$sleep_total))
+```
+
+```{r}
+sd(msleep$sleep_total)
+```
+
+## Mean absolute deviation
+Mean absolute deviation takes the absolute value of the distances to the mean, and then takes the mean of those differences. While this is similar to standard deviation, it's not exactly the same. Standard deviation squares distances, so longer distances are penalized more than shorter ones, while mean absolute deviation penalizes each distance equally. One isn't better than the other, but SD is more common than MAD.
+
+```{r}
+mean(abs(dists))
+```
+
+## Quartiles
+Before we discuss the next measure of spread, let's quickly talk about quartiles. Quartiles split up the data into four equal parts. Here, we call the quantile function to get the quartiles of the data. This means that 25% of the data is between 1-point-9 and 7-point-85, another 25% is between 7-point-85 and 10-point-10, and so on. This means that the second quartile splits the data in two, with 50% of the data below it and 50% of the data above it, so it's exactly the same as the median.
+
+```{r}
+quantile(msleep$sleep_total)
+```
+
+The boxes in box plots represent quartiles. The bottom of the box is the first quartile, and the top of the box is the third quartile. The middle line is the second quartile, or the median.
+
+```{r}
+ggplot(msleep, aes(y = sleep_total)) + geom_boxplot()
+```
+
+## Quantiles
+
+Quantiles, also called percentiles, are a generalized version of quartile, so they can split data into 5 pieces or ten pieces, for example. By default, the quantile function returns the quartiles of the data, but we can adjust this using the probs argument, which takes in a vector of proportions. Here, we split the data in five equal pieces. We can also use the seq function as a shortcut, which takes in the lowest number, the highest number, and the number we want to jump by. We can compute the same quantiles using seq from zero to one, jumping by 0-point-2.
+
+```{r}
+quantile(msleep$sleep_total, probs = c(0, 0.2, 0.4, 0.6, 0.8, 1))
+```
+
+```{r}
+quantile(msleep$sleep_total, probs = seq(0, 1, 0.2))
+```
+
+## Interquartile range (IQR)
+The interquartile range, or IQR, is another measure of spread. It's the distance between the 25th and 75th percentile, which is also the height of the box in a boxplot. We can calculate it using the quantile function to get 5-point-9 hours.
+
+```{r}
+quantile(msleep$sleep_total, 0.75) - quantile(msleep$sleep_total, 0.25)
+```
+
+## Outliers
+Outliers are data points that are substantially different from the others. But how do we know what a substantial difference is? A rule that's often used is that any data point less than the first quartile minus 1.5 times the IQR is an outlier, as well as any point greater than the third quartile plus 1.5 times the IQR.
+
+
+## Finding outliers
+To find outliers, we'll start by calculating the IQR of the mammals' body weights. We can then calculate the lower and upper thresholds following the formulas from the previous slide. We can now filter the data frame to find mammals whose body weight is above or below the thresholds. We can see that there are eleven body weight outliers in this dataset, including the cow and the Asian elephant.
+
+```{r}
+iqr <- quantile(msleep$bodywt, 0.75) - quantile(msleep$bodywt, 0.25)
+lower_threshold <- quantile(msleep$bodywt, 0.25) - 1.5 * iqr
+upper_threshold<- quantile(msleep$bodywt, 0.75) + 1.5 * iqr
+
+msleep %>% filter(bodywt < lower_threshold | bodywt > upper_threshold ) %>%
+select(name, vore, sleep_total, bodywt)
+```
+
+
+
+
+
 
 
 
