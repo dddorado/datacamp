@@ -4,35 +4,102 @@ output: html_notebook
 ---
 
 # Course Description
-
 Statistics is the study of how to collect, analyze, and draw conclusions from data. It’s a hugely valuable tool that you can use to bring the future into focus and infer the answer to tons of questions. For example, what is the likelihood of someone purchasing your product, how many calls will your support team receive, and how many jeans sizes should you manufacture to fit 95% of the population? In this course, you'll use sales data to discover how to answer questions like these as you grow your statistical skills and learn how to calculate averages, use scatterplots to show the relationship between numeric values, and calculate correlation. You'll also tackle probability, the backbone of statistical reasoning, and learn how to conduct a well-designed study to draw your own conclusions from data.
 
 # Summary Statistics
-
 Summary statistics gives you the tools you need to boil down massive datasets to reveal the highlights. In this chapter, you'll explore summary statistics including mean, median, and standard deviation, and learn how to accurately interpret them. You'll also develop your critical thinking skills, allowing you to choose the best summary statistics for your data.
 
 ## What is statistics?
-
 So what is statistics anyway? We can talk about the field of statistics, which is the practice and study of collecting and analyzing data. We can also talk about a summary statistic, which is a fact about or summary of some data, like an average or a count.
 
 ## What can statistics do?
-
 A more important question, however, is what can statistics do? With the power of statistics, we can answer tons of different questions like: How likely is someone to purchase a product? Are people more likely to purchase it if they can use a different payment system? How many occupants will your hotel have? How can you optimize occupancy? How many sizes of jeans need to be manufactured so they can fit 95% of the population? Should the same number of each size be produced? A question like, Which ad is more effective in getting people to purchase a product? can be answered with A/B testing.
 
 ## What can't statistics do?
-
 While statistics can answer a lot of questions, it's important to note that statistics can't answer every question. If we want to know why the TV series Game of Thrones is so popular, we could ask everyone why they like it, but they may lie or leave out reasons. We can see if series with more violent scenes attract more viewers, but even if they do, we can't know if the violence in Game of Thrones is the reason for its popularity, or if other factors are driving its popularity and it just happens to be violent.
 
 ## Types of statistics
-
 There are 2 main branches of statistics: descriptive statistics and inferential statistics. Descriptive statistics focuses on describing and summarizing the data at hand. After asking four friends how they get to work, we can see that 50% of them drive to work, 25% ride the bus, and 25% bike. These are examples of descriptive statistics. Inferential statistics uses the data at hand, which is called sample data, to make inferences about a larger population. We could use inferential statistics to figure out what percent of people drive to work based on our sample data.
 
 ## Types of data
-
 There are two main types of data. Numeric, or quantitative data is made up of numeric values. Categorical, or qualitative data is made up of values that belong to distinct groups. It's important to note that these aren't the only two types of data that exist - there are others too, but we'll be focusing on these two. Numeric data can be further separated into continuous and discrete data. Continuous numeric data is often quantities that can be measured, like speed or time. Discrete numeric data is usually count data, like number of pets or number of packages shipped. Categorical data can be nominal or ordinal. Nominal categorical data is made up of categories with no inherent ordering, like marriage status or country of residence. Ordinal categorical data has an inherent order, like a survey question where you need to indicate the degree to which you agree with a statement.
 
 ## Why does data type matter?
-
 Sometimes, categorical variables are represented using numbers. Married and unmarried can be represented using 1 and 0, or an agreement scale could be represented with numbers 1 through 5. However, it's important to note that this doesn't necessarily make them numeric variables.
 
 Being able to identify data types is important since the type of data you're working with will dictate what kinds of summary statistics and visualizations make sense for your data, so this is an important skill to master. For numerical data, we can use summary statistics like mean, and plots like scatterplots, but these don't make a ton of sense for categorical data.
+
+## Measures of center
+In this lesson, we'll begin to discuss summary statistics, some of which you may already be familiar with, like mean and median. We'll look at data about different mammals' sleep habits.
+
+```{r load packages}
+library(tidyverse)
+```
+
+```{r examine dataset}
+msleep
+```
+
+## Histogram
+Before we dive in, let's remind ourselves how histograms work. A histogram takes a bunch of data points and separates them into bins, or ranges of values. Here, there's a bin for 0 to 2 hours, 2 to 4 hours, and so on. The heights of the bars represent the number of data points that fall into that bin, so there's one mammal in the dataset that sleeps between 0 and 2 hours, and nine mammals that sleep two to four hours. Histograms are a great way to visually summarize the data, but we can use numerical summary statistics to summarize even further.
+
+```{r create sleep histogram}
+hist(msleep$sleep_total)
+```
+
+## How long do mammals in this dataset typically sleep?
+One way we could summarize the data is by answering the question, How long do mammals in this dataset typically sleep? To answer this, we need to figure out what the "typical" or "center" value of the data is. We'll discuss three different definitions, or measures, of center: mean, median, and mode.
+
+## Measures of center: mean
+The mean, often called the average, is one of the most common ways of summarizing data. To calculate mean, we add up all the numbers of interest and divide by the total number of data points, which is 83 here. This gives us 10-point-43 hours of sleep. In R, we can use the mean function, passing it the variable of interest.
+
+```{r}
+mean(msleep$sleep_total)
+```
+
+## Measures of center: median
+Another measure of center is the median. The median is the value where 50% of the data is lower than it, and 50% of the data is higher. We can calculate this by sorting all the data points and taking the middle one, which would be index 42 in this case. This gives us a median of 10.1 hours of sleep. In R, we can use the median function to do the calculations for us.
+
+```{r}
+sort(msleep$sleep_total)
+```
+
+```{r}
+sort(msleep$sleep_total)[42]
+```
+
+```{r}
+median(msleep$sleep_total)
+```
+
+## Measures of center: mode
+The mode is the most frequent value in the data. If we count how many occurrences there are of each sleep_total and sort in descending order, there are 4 mammals that sleep for 12.5 hours, so this is the mode. The mode of the vore variable, which indicates the animal's diet, is herbivore. Mode is often used for categorical variables, since categorical variables can be unordered and often don't have an inherent numerical representation.
+
+```{r}
+msleep %>% count(sleep_total, sort = TRUE)
+```
+
+```{r}
+msleep %>% count(vore, sort = TRUE)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
