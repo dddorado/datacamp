@@ -1,0 +1,358 @@
+---
+which---
+title: "Introduction to Importing Data in R"
+author: "Filip Schouwenaars"
+format: html
+editor: visual
+---
+
+**Course Description:** Importing data into R should be the easiest step in your analysis. Unfortunately, that is almost never the case. Data can come in many formats, ranging from .csv and text files, to statistical software files, to databases and HTML data. Knowing which approach to use is key to getting started with the actual analysis. In this course, you'll start by learning how to read .csv and text files in R. You will then cover the readr and data.table packages to easily and efficiently import flat file data. After that, you will learn how to read .xls files in R using readxl and gdata.
+
+## Importing data from flat files with utils
+
+A lot of data comes in the form of flat files: simple tabular text files. Learn how to import the common formats of flat file data with base R functions.
+
+### Required packages
+
+```{r message=FALSE, warning=FALSE, eval=FALSE}
+install.packages("readr",repos = "http://cran.us.r-project.org")
+```
+
+```{r message=FALSE, warning=FALSE, eval=FALSE}
+install.packages("data.table",repos = "http://cran.us.r-project.org")
+```
+
+### read.csv
+
+The utils package, which is automatically loaded in your R session on startup, can import CSV files with the read.csv() function.
+
+-   Use `read.csv()` to import `"swimming_pools.csv"` as a data frame with the name `pools`.
+
+-   Print the structure of `pools` using `str()`.
+
+```{r}
+# Import swimming_pools.csv: pools
+pools <- read.csv("swimming_pools.csv")
+# Print the structure of pools
+str(pools)
+```
+
+### stringsAsFactors
+
+With `stringsAsFactors`, you can tell R whether it should convert strings in the flat file to factors.
+
+For all importing functions in the `utils` package, this argument is `TRUE`, which means that you import strings as factors. This only makes sense if the strings you import represent categorical variables in R. If you set `stringsAsFactors` to `FALSE`, the data frame columns corresponding to strings in your text file will be `character`.
+
+-   Use `read.csv()` to import the data in `"swimming_pools.csv"` as a data frame called `pools`; make sure that strings are imported as characters, not as factors.
+
+-   Using `str()`, display the structure of the dataset and check that you indeed get character vectors instead of factors.
+
+```{r}
+# Import swimming_pools.csv correctly: pools
+pools <- read.csv("swimming_pools.csv", stringsAsFactors = FALSE)
+# Check the structure of pools
+str(pools)
+```
+
+### Any changes?
+
+Consider the code below that loads data from `swimming_pools.csv` in two distinct ways:
+
+```         
+# Option A pools <- read.csv("swimming_pools.csv", stringsAsFactors = TRUE)  
+# Option B pools <- read.csv("swimming_pools.csv", stringsAsFactors = FALSE) 
+```
+
+How many variables in the resulting `pools` data frame have different types if you specify the `stringsAsFactors` argument differently?
+
+### read.delim
+
+Aside from `.csv` files, there are also the `.txt` files which are basically text files. You can import these functions with `read.delim()`. By default, it sets the `sep` argument to `"\t"` (fields in a record are delimited by tabs) and the `header` argument to `TRUE` (the first row contains the field names).
+
+-   Import the data in `"hotdogs.txt"` with `read.delim()`. Call the resulting data frame `hotdogs`. The variable names are **not** on the first line, so make sure to set the `header` argument appropriately.
+
+-   Call `summary()` on `hotdogs`. This will print out some summary statistics about all variables in the data frame.
+
+```{r}
+# Import hotdogs.txt: hotdogs
+hotdogs <- read.delim("hotdogs.txt", header = FALSE)
+
+# Summarize hotdogs
+summary(hotdogs)
+```
+
+### read.table
+
+If you're dealing with more exotic flat file formats, you'll want to use `read.table()`. It's the most basic importing function; you can specify tons of different arguments in this function. Unlike `read.csv()` and `read.delim()`, the `header` argument defaults to `FALSE` and the `sep` argument is `""` by default.
+
+-   Finish the `read.table()` call that's been prepared for you. Use the `path` variable, and make sure to set `sep` correctly.
+
+-   Call `head()` on `hotdogs`; this will print the first 6 observations in the data frame.
+
+```{r}
+# Path to the hotdogs.txt file: path
+path <- file.path("data", "hotdogs.txt")
+
+# Import the hotdogs.txt file: hotdogs
+hotdogs <- read.table(path, 
+                      sep = "\t", 
+                      col.names = c("type", "calories", "sodium"))
+
+# Call head() on hotdogs
+head(hotdogs)
+```
+
+### Arguments
+
+Lily and Tom are having an argument because they want to share a hot dog but they can't seem to agree on which one to choose. After some time, they simply decide that they will have one each. Lily wants to have the one with the fewest calories while Tom wants to have the one with the most sodium.
+
+Next to `calories` and `sodium`, the hotdogs have one more variable: `type`. This can be one of three things: `Beef`, `Meat`, or `Poultry`, so a categorical variable: a factor is fine.
+
+-   Finish the `read.delim()` call to import the data in `"hotdogs.txt"`. It's a tab-delimited file without names in the first row.
+
+-   The code that selects the observation with the lowest calorie count and stores it in the variable `lily` is already available. It uses the function `which.min()`, that returns the index the smallest value in a vector.
+
+-   Do a similar thing for Tom: select the observation with the *most sodium* and store it in `tom`. Use `which.max()` this time.
+
+-   Finally, print both the observations `lily` and `tom`.
+
+```{r}
+# Finish the read.delim() call
+hotdogs <- read.delim("hotdogs.txt", header = FALSE, col.names = c("type", "calories", "sodium"))
+
+# Select the hot dog with the least calories: lily
+lily <- hotdogs[which.min(hotdogs$calories), ]
+
+# Select the observation with the most sodium: tom
+tom <- hotdogs[which.max(hotdogs$sodium), ]
+
+# Print lily and tom
+lily
+tom
+```
+
+### Column classes
+
+Next to column names, you can also specify the column types or column classes of the resulting data frame. You can do this by setting the `colClasses` argument to a vector of strings representing classes:
+
+```         
+read.delim("my_file.txt",
+            colClasses = c("character",
+                            "numeric",                           
+                            "logical")) 
+```
+
+This approach can be useful if you have some columns that should be factors and others that should be characters. You don't have to bother with `stringsAsFactors` anymore; just state for each column what the class should be.
+
+If a column is set to `"NULL"` in the `colClasses` vector, this column will be skipped and will not be loaded into the data frame.
+
+-   The `read.delim()` call from before is already included and creates the `hotdogs` data frame. Go ahead and display the structure of `hotdogs`.
+
+-   **Edit** the second `read.delim()` call. Assign the correct vector to the `colClasses` argument. `NA` should be replaced with a character vector: `c("factor", "NULL", "numeric")`.
+
+-   Display the structure of `hotdogs2` and look for the difference.
+
+```{r}
+# Previous call to import hotdogs.txt
+hotdogs <- read.delim("hotdogs.txt", header = FALSE, col.names = c("type", "calories", "sodium"))
+
+# Display structure of hotdogs
+str(hotdogs)
+
+# Edit the colClasses argument to import the data correctly: hotdogs2
+hotdogs2 <- read.delim("hotdogs.txt", header = FALSE, 
+                       col.names = c("type", "calories", "sodium"),
+                       colClasses = c("factor", "NULL", "numeric"))
+
+# Display structure of hotdogs2
+str(hotdogs2)
+```
+
+### read_csv
+
+CSV files can be imported with `read_csv()`. It's a wrapper function around `read_delim()` that handles all the details for you. For example, it will assume that the first row contains the column names.
+
+```{r}
+# Load the readr package
+library(readr)
+
+# Import potatoes.csv with read_csv(): potatoes
+potatoes <- read_csv("potatoes.csv")
+```
+
+### read_tsv
+
+Where you use `read_csv()` to easily read in CSV files, you use `read_tsv()` to easily read in TSV files. TSV is short for tab-separated values.
+
+-   Use `read_tsv()` to import the potatoes data from `potatoes.txt` and store it in the data frame `potatoes`. In addition to the path to the file, you'll also have to specify the `col_names` argument; you can use the `properties` vector for this.
+
+-   Call `head()` on `potatoes` to show the first observations of your dataset.
+
+```{r}
+# Column names
+properties <- c("area", "temp", "size", "storage", "method",
+                "texture", "flavor", "moistness")
+
+# Import potatoes.txt: potatoes
+potatoes <- read_tsv("potatoes.txt", col_names = properties)
+
+# Call head() on potatoes
+head(potatoes)
+```
+
+### read_delim
+
+Just as `read.table()` was the main `utils` function, `read_delim()` is the main `readr` function.
+
+`read_delim()` takes two mandatory arguments:
+
+-   `file`: the file that contains the data
+
+-   `delim`: the character that separates the values in the data file
+
+As before, the vector `properties` is available to set the `col_names`.
+
+-   Import all the data in `"potatoes.txt"` using `read_delim()`; store the resulting data frame in `potatoes`.
+
+-   Print out `potatoes`.
+
+```{r}
+# Column names
+properties <- c("area", "temp", "size", "storage", "method",
+                "texture", "flavor", "moistness")
+
+# Import potatoes.txt using read_delim(): potatoes
+potatoes <- read_delim("potatoes.txt", delim = "\t", col_names = properties)
+
+# Print out potatoes
+potatoes
+```
+
+### skip and n_max
+
+Through `skip` and `n_max` you can control *which part* of your flat file you're actually importing into R.
+
+-   `skip` specifies the number of lines you're ignoring in the flat file before actually starting to import data.
+
+-   `n_max` specifies the number of lines you're actually importing.
+
+Say for example you have a CSV file with 20 lines, and set `skip = 2` and `n_max = 3`, you're only reading in lines 3, 4 and 5 of the file.
+
+Watch out: Once you `skip` some lines, you also skip the first line that can contain column names!
+
+-   Finish the first `read_tsv()` call to import observations 7, 8, 9, 10 and 11 from `potatoes.txt`.
+
+```{r}
+# Column names
+properties <- c("area", "temp", "size", "storage", "method",
+                "texture", "flavor", "moistness")
+
+# Import 5 observations from potatoes.txt: potatoes_fragment
+potatoes_fragment <- read_tsv("potatoes.txt", skip = 6, n_max = 5, col_names = properties)
+```
+
+### col_types
+
+You can also specify which types the columns in your imported data frame should have. You can do this with `col_types`. If set to `NULL`, the default, functions from the `readr` package will try to find the correct types themselves. You can manually set the types with a string, where each character denotes the class of the column: `c`haracter, `d`ouble, `i`nteger and `l`ogical. `_` skips the column as a whole.
+
+-   In the second `read_tsv()` call, edit the `col_types` argument to import *all* columns as characters (`c`). Store the resulting data frame in `potatoes_char`.
+
+-   Print out the structure of `potatoes_char` and verify whether all column types are `chr`, short for `character`.
+
+```{r}
+# Column names
+properties <- c("area", "temp", "size", "storage", "method",
+                "texture", "flavor", "moistness")
+
+# Import all data, but force all columns to be character: potatoes_char
+potatoes_char <- read_tsv("potatoes.txt", col_types = "cccccccc", col_names = properties)
+
+# Print out structure of potatoes_char
+str(potatoes_char)
+```
+
+### col_types with collectors
+
+Another way of setting the types of the imported columns is using **collectors**. Collector functions can be passed in a `list()` to the `col_types` argument of `read_` functions to tell them how to interpret values in a column.
+
+For a complete list of collector functions, you can take a look at the `collector` documentation. For this exercise you will need two collector functions:
+
+-   `col_integer()`: the column should be interpreted as an integer.
+
+-   `col_factor(levels, ordered = FALSE)`: the column should be interpreted as a factor with `levels`.
+
+<!-- -->
+
+-   `hotdogs` is created for you without setting the column types. Inspect its summary using the `summary()` function.
+
+-   Two collector functions are defined for you: `fac` and `int`. Have a look at them, do you understand what they're collecting?
+
+-   In the second `read_tsv()` call, edit the `col_types` argument: Pass a `list()` with the elements `fac`, `int` and `int`, so the first column is imported as a factor, and the second and third column as integers.
+
+-   Create a `summary()` of `hotdogs_factor`. Compare this to the summary of `hotdogs`.
+
+```{r}
+# Import without col_types
+hotdogs <- read_tsv("hotdogs.txt", col_names = c("type", "calories", "sodium"))
+
+# Display the summary of hotdogs
+summary(hotdogs)
+
+# The collectors you will need to import the data
+fac <- col_factor(levels = c("Beef", "Meat", "Poultry"))
+int <- col_integer()
+
+# Edit the col_types argument to import the data correctly: hotdogs_factor
+hotdogs_factor <- read_tsv("hotdogs.txt",
+                           col_names = c("type", "calories", "sodium"),
+                           col_types = list(fac, int, int))
+
+# Display the summary of hotdogs_factor
+summary(hotdogs_factor)
+```
+
+### **fread**
+
+You still remember how to use `read.table()`, right? Well, `fread()` is a function that does the same job with very similar arguments. It is extremely easy to use and blazingly fast! Often, simply specifying the path to the file is enough to successfully import your data.
+
+-   Use `library()` to load (NOT install) the `data.table` package. You **do not** need to install the package, it is already installed on DataCamp's servers.
+
+-   Import `"potatoes.csv"` with `fread()`. Simply pass it the file path and see if it worked. Store the result in a variable `potatoes`.
+
+-   Print out `potatoes`.
+
+```{r}
+# load the data.table package using library()
+library(data.table)
+
+# Import potatoes.csv with fread(): potatoes
+potatoes <- fread("potatoes.csv")
+
+# Print out potatoes
+potatoes
+```
+
+### **fread: more advanced use**
+
+Now that you know the basics about `fread()`, you should know about two arguments of the function: `drop` and `select`, to drop or select variables of interest.
+
+Suppose you have a dataset that contains 5 variables and you want to keep the first and fifth variable, named "a" and "e". The following options will all do the trick:
+
+```         
+fread("path/to/file.txt", drop = 2:4) 
+fread("path/to/file.txt", select = c(1, 5)) 
+fread("path/to/file.txt", drop = c("b", "c", "d")) 
+fread("path/to/file.txt", select = c("a", "e")) 
+```
+
+-   Using `fread()` and `select` or `drop` as arguments, only import the `texture` and `moistness` columns of the flat file. They correspond to the columns 6 and 8 in `"potatoes.csv"`. Store the result in a variable `potatoes`.
+
+-   `plot()` 2 columns of the `potatoes` data frame: `texture` on the x-axis, `moistness` on the y-axis. Use the dollar sign notation twice. Feel free to name your axes and plot.
+
+```{r}
+# Import columns 6 and 8 of potatoes.csv: potatoes
+potatoes <- fread("potatoes.csv", select = c(6, 8))
+
+# Plot texture (x) and moistness (y) of potatoes
+plot(x = potatoes$texture, y = potatoes$moistness)
+```

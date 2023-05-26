@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.475">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Filip Schouwenaars">
+
+<title>Introduction to Importing Data in R</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="IntroToImportingData_files/libs/clipboard/clipboard.min.js"></script>
+<script src="IntroToImportingData_files/libs/quarto-html/quarto.js"></script>
+<script src="IntroToImportingData_files/libs/quarto-html/popper.min.js"></script>
+<script src="IntroToImportingData_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="IntroToImportingData_files/libs/quarto-html/anchor.min.js"></script>
+<link href="IntroToImportingData_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="IntroToImportingData_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="IntroToImportingData_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="IntroToImportingData_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="IntroToImportingData_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+
+
+</head>
+
+<body class="fullcontent">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Introduction to Importing Data in R</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Filip Schouwenaars </p>
+          </div>
+  </div>
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<p><strong>Course Description:</strong> Importing data into R should be the easiest step in your analysis. Unfortunately, that is almost never the case. Data can come in many formats, ranging from .csv and text files, to statistical software files, to databases and HTML data. Knowing which approach to use is key to getting started with the actual analysis. In this course, you’ll start by learning how to read .csv and text files in R. You will then cover the readr and data.table packages to easily and efficiently import flat file data. After that, you will learn how to read .xls files in R using readxl and gdata.</p>
+<section id="importing-data-from-flat-files-with-utils" class="level2">
+<h2 class="anchored" data-anchor-id="importing-data-from-flat-files-with-utils">Importing data from flat files with utils</h2>
+<p>A lot of data comes in the form of flat files: simple tabular text files. Learn how to import the common formats of flat file data with base R functions.</p>
+<section id="required-packages" class="level3">
+<h3 class="anchored" data-anchor-id="required-packages">Required packages</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"readr"</span>,<span class="at">repos =</span> <span class="st">"http://cran.us.r-project.org"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"data.table"</span>,<span class="at">repos =</span> <span class="st">"http://cran.us.r-project.org"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="read.csv" class="level3">
+<h3 class="anchored" data-anchor-id="read.csv">read.csv</h3>
+<p>The utils package, which is automatically loaded in your R session on startup, can import CSV files with the read.csv() function.</p>
+<ul>
+<li><p>Use <code>read.csv()</code> to import <code>"swimming_pools.csv"</code> as a data frame with the name <code>pools</code>.</p></li>
+<li><p>Print the structure of <code>pools</code> using <code>str()</code>.</p></li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Import swimming_pools.csv: pools</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>pools <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"swimming_pools.csv"</span>)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Print the structure of pools</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(pools)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>'data.frame':   20 obs. of  4 variables:
+ $ Name     : chr  "Acacia Ridge Leisure Centre" "Bellbowrie Pool" "Carole Park" "Centenary Pool (inner City)" ...
+ $ Address  : chr  "1391 Beaudesert Road, Acacia Ridge" "Sugarwood Street, Bellbowrie" "Cnr Boundary Road and Waterford Road Wacol" "400 Gregory Terrace, Spring Hill" ...
+ $ Latitude : num  -27.6 -27.6 -27.6 -27.5 -27.4 ...
+ $ Longitude: num  153 153 153 153 153 ...</code></pre>
+</div>
+</div>
+</section>
+<section id="stringsasfactors" class="level3">
+<h3 class="anchored" data-anchor-id="stringsasfactors">stringsAsFactors</h3>
+<p>With <code>stringsAsFactors</code>, you can tell R whether it should convert strings in the flat file to factors.</p>
+<p>For all importing functions in the <code>utils</code> package, this argument is <code>TRUE</code>, which means that you import strings as factors. This only makes sense if the strings you import represent categorical variables in R. If you set <code>stringsAsFactors</code> to <code>FALSE</code>, the data frame columns corresponding to strings in your text file will be <code>character</code>.</p>
+<ul>
+<li><p>Use <code>read.csv()</code> to import the data in <code>"swimming_pools.csv"</code> as a data frame called <code>pools</code>; make sure that strings are imported as characters, not as factors.</p></li>
+<li><p>Using <code>str()</code>, display the structure of the dataset and check that you indeed get character vectors instead of factors.</p></li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Import swimming_pools.csv correctly: pools</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>pools <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"swimming_pools.csv"</span>, <span class="at">stringsAsFactors =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Check the structure of pools</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(pools)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>'data.frame':   20 obs. of  4 variables:
+ $ Name     : chr  "Acacia Ridge Leisure Centre" "Bellbowrie Pool" "Carole Park" "Centenary Pool (inner City)" ...
+ $ Address  : chr  "1391 Beaudesert Road, Acacia Ridge" "Sugarwood Street, Bellbowrie" "Cnr Boundary Road and Waterford Road Wacol" "400 Gregory Terrace, Spring Hill" ...
+ $ Latitude : num  -27.6 -27.6 -27.6 -27.5 -27.4 ...
+ $ Longitude: num  153 153 153 153 153 ...</code></pre>
+</div>
+</div>
+</section>
+<section id="any-changes" class="level3">
+<h3 class="anchored" data-anchor-id="any-changes">Any changes?</h3>
+<p>Consider the code below that loads data from <code>swimming_pools.csv</code> in two distinct ways:</p>
+<pre><code># Option A pools &lt;- read.csv("swimming_pools.csv", stringsAsFactors = TRUE)  
+# Option B pools &lt;- read.csv("swimming_pools.csv", stringsAsFactors = FALSE) </code></pre>
+<p>How many variables in the resulting <code>pools</code> data frame have different types if you specify the <code>stringsAsFactors</code> argument differently?</p>
+</section>
+<section id="read.delim" class="level3">
+<h3 class="anchored" data-anchor-id="read.delim">read.delim</h3>
+<p>Aside from <code>.csv</code> files, there are also the <code>.txt</code> files which are basically text files. You can import these functions with <code>read.delim()</code>. By default, it sets the <code>sep</code> argument to <code>"\t"</code> (fields in a record are delimited by tabs) and the <code>header</code> argument to <code>TRUE</code> (the first row contains the field names).</p>
+<ul>
+<li><p>Import the data in <code>"hotdogs.txt"</code> with <code>read.delim()</code>. Call the resulting data frame <code>hotdogs</code>. The variable names are <strong>not</strong> on the first line, so make sure to set the <code>header</code> argument appropriately.</p></li>
+<li><p>Call <code>summary()</code> on <code>hotdogs</code>. This will print out some summary statistics about all variables in the data frame.</p></li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Import hotdogs.txt: hotdogs</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>hotdogs <span class="ot">&lt;-</span> <span class="fu">read.delim</span>(<span class="st">"hotdogs.txt"</span>, <span class="at">header =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Summarize hotdogs</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(hotdogs)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>      V1                  V2              V3       
+ Length:54          Min.   : 86.0   Min.   :144.0  
+ Class :character   1st Qu.:132.0   1st Qu.:362.5  
+ Mode  :character   Median :145.0   Median :405.0  
+                    Mean   :145.4   Mean   :424.8  
+                    3rd Qu.:172.8   3rd Qu.:503.5  
+                    Max.   :195.0   Max.   :645.0  </code></pre>
+</div>
+</div>
+</section>
+<section id="read.table" class="level3">
+<h3 class="anchored" data-anchor-id="read.table">read.table</h3>
+<p>If you’re dealing with more exotic flat file formats, you’ll want to use <code>read.table()</code>. It’s the most basic importing function; you can specify tons of different arguments in this function. Unlike <code>read.csv()</code> and <code>read.delim()</code>, the <code>header</code> argument defaults to <code>FALSE</code> and the <code>sep</code> argument is <code>""</code> by default.</p>
+<ul>
+<li><p>Finish the <code>read.table()</code> call that’s been prepared for you. Use the <code>path</code> variable, and make sure to set <code>sep</code> correctly.</p></li>
+<li><p>Call <code>head()</code> on <code>hotdogs</code>; this will print the first 6 observations in the data frame.</p></li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Path to the hotdogs.txt file: path</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>path <span class="ot">&lt;-</span> <span class="fu">file.path</span>(<span class="st">"data"</span>, <span class="st">"hotdogs.txt"</span>)</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Import the hotdogs.txt file: hotdogs</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>hotdogs <span class="ot">&lt;-</span> <span class="fu">read.table</span>(path, </span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>                      <span class="at">sep =</span> <span class="st">"</span><span class="sc">\t</span><span class="st">"</span>, </span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>                      <span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">"type"</span>, <span class="st">"calories"</span>, <span class="st">"sodium"</span>))</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Call head() on hotdogs</span></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(hotdogs)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  type calories sodium
+1 Beef      186    495
+2 Beef      181    477
+3 Beef      176    425
+4 Beef      149    322
+5 Beef      184    482
+6 Beef      190    587</code></pre>
+</div>
+</div>
+</section>
+<section id="arguments" class="level3">
+<h3 class="anchored" data-anchor-id="arguments">Arguments</h3>
+<p>Lily and Tom are having an argument because they want to share a hot dog but they can’t seem to agree on which one to choose. After some time, they simply decide that they will have one each. Lily wants to have the one with the fewest calories while Tom wants to have the one with the most sodium.</p>
+<p>Next to <code>calories</code> and <code>sodium</code>, the hotdogs have one more variable: <code>type</code>. This can be one of three things: <code>Beef</code>, <code>Meat</code>, or <code>Poultry</code>, so a categorical variable: a factor is fine.</p>
+<ul>
+<li><p>Finish the <code>read.delim()</code> call to import the data in <code>"hotdogs.txt"</code>. It’s a tab-delimited file without names in the first row.</p></li>
+<li><p>The code that selects the observation with the lowest calorie count and stores it in the variable <code>lily</code> is already available. It uses the function <code>which.min()</code>, that returns the index the smallest value in a vector.</p></li>
+<li><p>Do a similar thing for Tom: select the observation with the <em>most sodium</em> and store it in <code>tom</code>. Use <code>which.max()</code> this time.</p></li>
+<li><p>Finally, print both the observations <code>lily</code> and <code>tom</code>.</p></li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Finish the read.delim() call</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>hotdogs <span class="ot">&lt;-</span> <span class="fu">read.delim</span>(<span class="st">"hotdogs.txt"</span>, <span class="at">header =</span> <span class="cn">FALSE</span>, <span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">"type"</span>, <span class="st">"calories"</span>, <span class="st">"sodium"</span>))</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Select the hot dog with the least calories: lily</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>lily <span class="ot">&lt;-</span> hotdogs[<span class="fu">which.min</span>(hotdogs<span class="sc">$</span>calories), ]</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Select the observation with the most sodium: tom</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>tom <span class="ot">&lt;-</span> hotdogs[<span class="fu">which.max</span>(hotdogs<span class="sc">$</span>sodium), ]</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Print lily and tom</span></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>lily</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>      type calories sodium
+50 Poultry       86    358</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>tom</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   type calories sodium
+15 Beef      190    645</code></pre>
+</div>
+</div>
+</section>
+<section id="column-classes" class="level3">
+<h3 class="anchored" data-anchor-id="column-classes">Column classes</h3>
+<p>Next to column names, you can also specify the column types or column classes of the resulting data frame. You can do this by setting the <code>colClasses</code> argument to a vector of strings representing classes:</p>
+<pre><code>read.delim("my_file.txt",
+            colClasses = c("character",
+                            "numeric",                           
+                            "logical")) </code></pre>
+<p>This approach can be useful if you have some columns that should be factors and others that should be characters. You don’t have to bother with <code>stringsAsFactors</code> anymore; just state for each column what the class should be.</p>
+<p>If a column is set to <code>"NULL"</code> in the <code>colClasses</code> vector, this column will be skipped and will not be loaded into the data frame.</p>
+<ul>
+<li><p>The <code>read.delim()</code> call from before is already included and creates the <code>hotdogs</code> data frame. Go ahead and display the structure of <code>hotdogs</code>.</p></li>
+<li><p><strong>Edit</strong> the second <code>read.delim()</code> call. Assign the correct vector to the <code>colClasses</code> argument. <code>NA</code> should be replaced with a character vector: <code>c("factor", "NULL", "numeric")</code>.</p></li>
+<li><p>Display the structure of <code>hotdogs2</code> and look for the difference.</p></li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Previous call to import hotdogs.txt</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>hotdogs <span class="ot">&lt;-</span> <span class="fu">read.delim</span>(<span class="st">"hotdogs.txt"</span>, <span class="at">header =</span> <span class="cn">FALSE</span>, <span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">"type"</span>, <span class="st">"calories"</span>, <span class="st">"sodium"</span>))</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Display structure of hotdogs</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(hotdogs)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>'data.frame':   54 obs. of  3 variables:
+ $ type    : chr  "Beef" "Beef" "Beef" "Beef" ...
+ $ calories: int  186 181 176 149 184 190 158 139 175 148 ...
+ $ sodium  : int  495 477 425 322 482 587 370 322 479 375 ...</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Edit the colClasses argument to import the data correctly: hotdogs2</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>hotdogs2 <span class="ot">&lt;-</span> <span class="fu">read.delim</span>(<span class="st">"hotdogs.txt"</span>, <span class="at">header =</span> <span class="cn">FALSE</span>, </span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>                       <span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">"type"</span>, <span class="st">"calories"</span>, <span class="st">"sodium"</span>),</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>                       <span class="at">colClasses =</span> <span class="fu">c</span>(<span class="st">"factor"</span>, <span class="st">"NULL"</span>, <span class="st">"numeric"</span>))</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Display structure of hotdogs2</span></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(hotdogs2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>'data.frame':   54 obs. of  2 variables:
+ $ type  : Factor w/ 3 levels "Beef","Meat",..: 1 1 1 1 1 1 1 1 1 1 ...
+ $ sodium: num  495 477 425 322 482 587 370 322 479 375 ...</code></pre>
+</div>
+</div>
+</section>
+<section id="read_csv" class="level3">
+<h3 class="anchored" data-anchor-id="read_csv">read_csv</h3>
+<p>CSV files can be imported with <code>read_csv()</code>. It’s a wrapper function around <code>read_delim()</code> that handles all the details for you. For example, it will assume that the first row contains the column names.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load the readr package</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readr)</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Import potatoes.csv with read_csv(): potatoes</span></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>potatoes <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"potatoes.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Rows: 160 Columns: 8
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ","
+dbl (8): area, temp, size, storage, method, texture, flavor, moistness
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+</div>
+</div>
+</section>
+<section id="read_tsv" class="level3">
+<h3 class="anchored" data-anchor-id="read_tsv">read_tsv</h3>
+<p>Where you use&nbsp;<code>read_csv()</code>&nbsp;to easily read in CSV files, you use&nbsp;<code>read_tsv()</code>&nbsp;to easily read in TSV files. TSV is short for tab-separated values.</p>
+<ul>
+<li><p>Use <code>read_tsv()</code> to import the potatoes data from <code>potatoes.txt</code> and store it in the data frame <code>potatoes</code>. In addition to the path to the file, you’ll also have to specify the <code>col_names</code> argument; you can use the <code>properties</code> vector for this.</p></li>
+<li><p>Call <code>head()</code> on <code>potatoes</code> to show the first observations of your dataset.</p></li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Column names</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>properties <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"area"</span>, <span class="st">"temp"</span>, <span class="st">"size"</span>, <span class="st">"storage"</span>, <span class="st">"method"</span>,</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>                <span class="st">"texture"</span>, <span class="st">"flavor"</span>, <span class="st">"moistness"</span>)</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Import potatoes.txt: potatoes</span></span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>potatoes <span class="ot">&lt;-</span> <span class="fu">read_tsv</span>(<span class="st">"potatoes.txt"</span>, <span class="at">col_names =</span> properties)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Rows: 160 Columns: 8
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: "\t"
+dbl (8): area, temp, size, storage, method, texture, flavor, moistness
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Call head() on potatoes</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(potatoes)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 8
+   area  temp  size storage method texture flavor moistness
+  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt;     &lt;dbl&gt;
+1     1     1     1       1      1     2.9    3.2       3  
+2     1     1     1       1      2     2.3    2.5       2.6
+3     1     1     1       1      3     2.5    2.8       2.8
+4     1     1     1       1      4     2.1    2.9       2.4
+5     1     1     1       1      5     1.9    2.8       2.2
+6     1     1     1       2      1     1.8    3         1.7</code></pre>
+</div>
+</div>
+</section>
+<section id="read_delim" class="level3">
+<h3 class="anchored" data-anchor-id="read_delim">read_delim</h3>
+<p>Just as <code>read.table()</code> was the main <code>utils</code> function, <code>read_delim()</code> is the main <code>readr</code> function.</p>
+<p><code>read_delim()</code> takes two mandatory arguments:</p>
+<ul>
+<li><p><code>file</code>: the file that contains the data</p></li>
+<li><p><code>delim</code>: the character that separates the values in the data file</p></li>
+</ul>
+<p>As before, the vector&nbsp;<code>properties</code>&nbsp;is available to set the&nbsp;<code>col_names</code>.</p>
+<ul>
+<li><p>Import all the data in <code>"potatoes.txt"</code> using <code>read_delim()</code>; store the resulting data frame in <code>potatoes</code>.</p></li>
+<li><p>Print out <code>potatoes</code>.</p></li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Column names</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>properties <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"area"</span>, <span class="st">"temp"</span>, <span class="st">"size"</span>, <span class="st">"storage"</span>, <span class="st">"method"</span>,</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>                <span class="st">"texture"</span>, <span class="st">"flavor"</span>, <span class="st">"moistness"</span>)</span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Import potatoes.txt using read_delim(): potatoes</span></span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>potatoes <span class="ot">&lt;-</span> <span class="fu">read_delim</span>(<span class="st">"potatoes.txt"</span>, <span class="at">delim =</span> <span class="st">"</span><span class="sc">\t</span><span class="st">"</span>, <span class="at">col_names =</span> properties)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Rows: 160 Columns: 8
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: "\t"
+dbl (8): area, temp, size, storage, method, texture, flavor, moistness
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Print out potatoes</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>potatoes</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 160 × 8
+    area  temp  size storage method texture flavor moistness
+   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt;     &lt;dbl&gt;
+ 1     1     1     1       1      1     2.9    3.2       3  
+ 2     1     1     1       1      2     2.3    2.5       2.6
+ 3     1     1     1       1      3     2.5    2.8       2.8
+ 4     1     1     1       1      4     2.1    2.9       2.4
+ 5     1     1     1       1      5     1.9    2.8       2.2
+ 6     1     1     1       2      1     1.8    3         1.7
+ 7     1     1     1       2      2     2.6    3.1       2.4
+ 8     1     1     1       2      3     3      3         2.9
+ 9     1     1     1       2      4     2.2    3.2       2.5
+10     1     1     1       2      5     2      2.8       1.9
+# ℹ 150 more rows</code></pre>
+</div>
+</div>
+</section>
+<section id="skip-and-n_max" class="level3">
+<h3 class="anchored" data-anchor-id="skip-and-n_max">skip and n_max</h3>
+<p>Through <code>skip</code> and <code>n_max</code> you can control <em>which part</em> of your flat file you’re actually importing into R.</p>
+<ul>
+<li><p><code>skip</code> specifies the number of lines you’re ignoring in the flat file before actually starting to import data.</p></li>
+<li><p><code>n_max</code> specifies the number of lines you’re actually importing.</p></li>
+</ul>
+<p>Say for example you have a CSV file with 20 lines, and set <code>skip = 2</code> and <code>n_max = 3</code>, you’re only reading in lines 3, 4 and 5 of the file.</p>
+<p>Watch out: Once you <code>skip</code> some lines, you also skip the first line that can contain column names!</p>
+<ul>
+<li>Finish the first&nbsp;<code>read_tsv()</code>&nbsp;call to import observations 7, 8, 9, 10 and 11 from&nbsp;<code>potatoes.txt</code>.</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Column names</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>properties <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"area"</span>, <span class="st">"temp"</span>, <span class="st">"size"</span>, <span class="st">"storage"</span>, <span class="st">"method"</span>,</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>                <span class="st">"texture"</span>, <span class="st">"flavor"</span>, <span class="st">"moistness"</span>)</span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Import 5 observations from potatoes.txt: potatoes_fragment</span></span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>potatoes_fragment <span class="ot">&lt;-</span> <span class="fu">read_tsv</span>(<span class="st">"potatoes.txt"</span>, <span class="at">skip =</span> <span class="dv">6</span>, <span class="at">n_max =</span> <span class="dv">5</span>, <span class="at">col_names =</span> properties)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Rows: 5 Columns: 8
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: "\t"
+dbl (8): area, temp, size, storage, method, texture, flavor, moistness
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+</div>
+</div>
+</section>
+<section id="col_types" class="level3">
+<h3 class="anchored" data-anchor-id="col_types">col_types</h3>
+<p>You can also specify which types the columns in your imported data frame should have. You can do this with&nbsp;<code>col_types</code>. If set to&nbsp;<code>NULL</code>, the default, functions from the&nbsp;<code>readr</code>&nbsp;package will try to find the correct types themselves. You can manually set the types with a string, where each character denotes the class of the column:&nbsp;<code>c</code>haracter,&nbsp;<code>d</code>ouble,&nbsp;<code>i</code>nteger and&nbsp;<code>l</code>ogical.&nbsp;<code>_</code>&nbsp;skips the column as a whole.</p>
+<ul>
+<li><p>In the second <code>read_tsv()</code> call, edit the <code>col_types</code> argument to import <em>all</em> columns as characters (<code>c</code>). Store the resulting data frame in <code>potatoes_char</code>.</p></li>
+<li><p>Print out the structure of <code>potatoes_char</code> and verify whether all column types are <code>chr</code>, short for <code>character</code>.</p></li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Column names</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>properties <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"area"</span>, <span class="st">"temp"</span>, <span class="st">"size"</span>, <span class="st">"storage"</span>, <span class="st">"method"</span>,</span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>                <span class="st">"texture"</span>, <span class="st">"flavor"</span>, <span class="st">"moistness"</span>)</span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Import all data, but force all columns to be character: potatoes_char</span></span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a>potatoes_char <span class="ot">&lt;-</span> <span class="fu">read_tsv</span>(<span class="st">"potatoes.txt"</span>, <span class="at">col_types =</span> <span class="st">"cccccccc"</span>, <span class="at">col_names =</span> properties)</span>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Print out structure of potatoes_char</span></span>
+<span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(potatoes_char)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>spc_tbl_ [160 × 8] (S3: spec_tbl_df/tbl_df/tbl/data.frame)
+ $ area     : chr [1:160] "1" "1" "1" "1" ...
+ $ temp     : chr [1:160] "1" "1" "1" "1" ...
+ $ size     : chr [1:160] "1" "1" "1" "1" ...
+ $ storage  : chr [1:160] "1" "1" "1" "1" ...
+ $ method   : chr [1:160] "1" "2" "3" "4" ...
+ $ texture  : chr [1:160] "2.9" "2.3" "2.5" "2.1" ...
+ $ flavor   : chr [1:160] "3.2" "2.5" "2.8" "2.9" ...
+ $ moistness: chr [1:160] "3.0" "2.6" "2.8" "2.4" ...
+ - attr(*, "spec")=
+  .. cols(
+  ..   area = col_character(),
+  ..   temp = col_character(),
+  ..   size = col_character(),
+  ..   storage = col_character(),
+  ..   method = col_character(),
+  ..   texture = col_character(),
+  ..   flavor = col_character(),
+  ..   moistness = col_character()
+  .. )
+ - attr(*, "problems")=&lt;externalptr&gt; </code></pre>
+</div>
+</div>
+</section>
+<section id="col_types-with-collectors" class="level3">
+<h3 class="anchored" data-anchor-id="col_types-with-collectors">col_types with collectors</h3>
+<p>Another way of setting the types of the imported columns is using <strong>collectors</strong>. Collector functions can be passed in a <code>list()</code> to the <code>col_types</code> argument of <code>read_</code> functions to tell them how to interpret values in a column.</p>
+<p>For a complete list of collector functions, you can take a look at the <code>collector</code> documentation. For this exercise you will need two collector functions:</p>
+<ul>
+<li><p><code>col_integer()</code>: the column should be interpreted as an integer.</p></li>
+<li><p><code>col_factor(levels, ordered = FALSE)</code>: the column should be interpreted as a factor with <code>levels</code>.</p></li>
+</ul>
+<!-- -->
+<ul>
+<li><p><code>hotdogs</code> is created for you without setting the column types. Inspect its summary using the <code>summary()</code> function.</p></li>
+<li><p>Two collector functions are defined for you: <code>fac</code> and <code>int</code>. Have a look at them, do you understand what they’re collecting?</p></li>
+<li><p>In the second <code>read_tsv()</code> call, edit the <code>col_types</code> argument: Pass a <code>list()</code> with the elements <code>fac</code>, <code>int</code> and <code>int</code>, so the first column is imported as a factor, and the second and third column as integers.</p></li>
+<li><p>Create a <code>summary()</code> of <code>hotdogs_factor</code>. Compare this to the summary of <code>hotdogs</code>.</p></li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Import without col_types</span></span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>hotdogs <span class="ot">&lt;-</span> <span class="fu">read_tsv</span>(<span class="st">"hotdogs.txt"</span>, <span class="at">col_names =</span> <span class="fu">c</span>(<span class="st">"type"</span>, <span class="st">"calories"</span>, <span class="st">"sodium"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Rows: 54 Columns: 3
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: "\t"
+chr (1): type
+dbl (2): calories, sodium
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Display the summary of hotdogs</span></span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(hotdogs)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     type              calories         sodium     
+ Length:54          Min.   : 86.0   Min.   :144.0  
+ Class :character   1st Qu.:132.0   1st Qu.:362.5  
+ Mode  :character   Median :145.0   Median :405.0  
+                    Mean   :145.4   Mean   :424.8  
+                    3rd Qu.:172.8   3rd Qu.:503.5  
+                    Max.   :195.0   Max.   :645.0  </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="co"># The collectors you will need to import the data</span></span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>fac <span class="ot">&lt;-</span> <span class="fu">col_factor</span>(<span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"Beef"</span>, <span class="st">"Meat"</span>, <span class="st">"Poultry"</span>))</span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>int <span class="ot">&lt;-</span> <span class="fu">col_integer</span>()</span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Edit the col_types argument to import the data correctly: hotdogs_factor</span></span>
+<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a>hotdogs_factor <span class="ot">&lt;-</span> <span class="fu">read_tsv</span>(<span class="st">"hotdogs.txt"</span>,</span>
+<span id="cb39-7"><a href="#cb39-7" aria-hidden="true" tabindex="-1"></a>                           <span class="at">col_names =</span> <span class="fu">c</span>(<span class="st">"type"</span>, <span class="st">"calories"</span>, <span class="st">"sodium"</span>),</span>
+<span id="cb39-8"><a href="#cb39-8" aria-hidden="true" tabindex="-1"></a>                           <span class="at">col_types =</span> <span class="fu">list</span>(fac, int, int))</span>
+<span id="cb39-9"><a href="#cb39-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-10"><a href="#cb39-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Display the summary of hotdogs_factor</span></span>
+<span id="cb39-11"><a href="#cb39-11" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(hotdogs_factor)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>      type       calories         sodium     
+ Beef   :20   Min.   : 86.0   Min.   :144.0  
+ Meat   :17   1st Qu.:132.0   1st Qu.:362.5  
+ Poultry:17   Median :145.0   Median :405.0  
+              Mean   :145.4   Mean   :424.8  
+              3rd Qu.:172.8   3rd Qu.:503.5  
+              Max.   :195.0   Max.   :645.0  </code></pre>
+</div>
+</div>
+</section>
+<section id="fread" class="level3">
+<h3 class="anchored" data-anchor-id="fread"><strong>fread</strong></h3>
+<p>You still remember how to use&nbsp;<code>read.table()</code>, right? Well,&nbsp;<code>fread()</code>&nbsp;is a function that does the same job with very similar arguments. It is extremely easy to use and blazingly fast! Often, simply specifying the path to the file is enough to successfully import your data.</p>
+<ul>
+<li><p>Use <code>library()</code> to load (NOT install) the <code>data.table</code> package. You <strong>do not</strong> need to install the package, it is already installed on DataCamp’s servers.</p></li>
+<li><p>Import <code>"potatoes.csv"</code> with <code>fread()</code>. Simply pass it the file path and see if it worked. Store the result in a variable <code>potatoes</code>.</p></li>
+<li><p>Print out <code>potatoes</code>.</p></li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="co"># load the data.table package using library()</span></span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(data.table)</span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Import potatoes.csv with fread(): potatoes</span></span>
+<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a>potatoes <span class="ot">&lt;-</span> <span class="fu">fread</span>(<span class="st">"potatoes.csv"</span>)</span>
+<span id="cb41-6"><a href="#cb41-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-7"><a href="#cb41-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Print out potatoes</span></span>
+<span id="cb41-8"><a href="#cb41-8" aria-hidden="true" tabindex="-1"></a>potatoes</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     area temp size storage method texture flavor moistness
+  1:    1    1    1       1      1     2.9    3.2       3.0
+  2:    1    1    1       1      2     2.3    2.5       2.6
+  3:    1    1    1       1      3     2.5    2.8       2.8
+  4:    1    1    1       1      4     2.1    2.9       2.4
+  5:    1    1    1       1      5     1.9    2.8       2.2
+ ---                                                       
+156:    2    2    2       4      1     2.7    3.3       2.6
+157:    2    2    2       4      2     2.6    2.8       2.3
+158:    2    2    2       4      3     2.5    3.1       2.6
+159:    2    2    2       4      4     3.4    3.3       3.0
+160:    2    2    2       4      5     2.5    2.8       2.3</code></pre>
+</div>
+</div>
+</section>
+<section id="fread-more-advanced-use" class="level3">
+<h3 class="anchored" data-anchor-id="fread-more-advanced-use"><strong>fread: more advanced use</strong></h3>
+<p>Now that you know the basics about <code>fread()</code>, you should know about two arguments of the function: <code>drop</code> and <code>select</code>, to drop or select variables of interest.</p>
+<p>Suppose you have a dataset that contains 5 variables and you want to keep the first and fifth variable, named “a” and “e”. The following options will all do the trick:</p>
+<pre><code>fread("path/to/file.txt", drop = 2:4) 
+fread("path/to/file.txt", select = c(1, 5)) 
+fread("path/to/file.txt", drop = c("b", "c", "d")) 
+fread("path/to/file.txt", select = c("a", "e")) </code></pre>
+<ul>
+<li><p>Using <code>fread()</code> and <code>select</code> or <code>drop</code> as arguments, only import the <code>texture</code> and <code>moistness</code> columns of the flat file. They correspond to the columns 6 and 8 in <code>"potatoes.csv"</code>. Store the result in a variable <code>potatoes</code>.</p></li>
+<li><p><code>plot()</code> 2 columns of the <code>potatoes</code> data frame: <code>texture</code> on the x-axis, <code>moistness</code> on the y-axis. Use the dollar sign notation twice. Feel free to name your axes and plot.</p></li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Import columns 6 and 8 of potatoes.csv: potatoes</span></span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>potatoes <span class="ot">&lt;-</span> <span class="fu">fread</span>(<span class="st">"potatoes.csv"</span>, <span class="at">select =</span> <span class="fu">c</span>(<span class="dv">6</span>, <span class="dv">8</span>))</span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot texture (x) and moistness (y) of potatoes</span></span>
+<span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="at">x =</span> potatoes<span class="sc">$</span>texture, <span class="at">y =</span> potatoes<span class="sc">$</span>moistness)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="IntroToImportingData_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

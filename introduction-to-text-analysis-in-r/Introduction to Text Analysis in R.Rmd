@@ -1,0 +1,157 @@
+---
+title: "Introduction to Text Analysis in R"
+output: html_notebook
+---
+# Course Description
+From social media to product reviews, text is an increasingly important type of data across applications, including marketing analytics. In many instances, text is replacing other forms of unstructured data due to how inexpensive and current it is. However, to take advantage of everything that text has to offer, you need to know how to think about, clean, summarize, and model text. In this course, you will use the latest tidy tools to quickly and easily get started with text. You will learn how to wrangle and visualize text, perform sentiment analysis, and run and interpret topic models.
+
+## Wrangling Text
+Since text is unstructured data, a certain amount of wrangling is required to get it into a form where you can analyze it. In this chapter, you will learn how to add structure to text by tokenizing, cleaning, and treating text as categorical data.
+
+### Text as data
+For this course, I assume you are familiar with the essential verbs or functions from *dplyr* and *ggplot2*. We will be covering wrangling text, visualizations, sentiment analysis, and topic modeling. Some of those might sound like advanced topics, but you’re not as far from mastering them as you might expect. There’s never been a better time to learn data analysis in R, including text analysis.
+
+*dplyr* and *ggplot2* are part of the *tidyverse*, a collection of packages that follow the same principles and are designed to work well together. While there are other ways to approach data analysis in R, the tidyverse is incredibly powerful and approachable and is largely the reason why it’s such a great time to learn R. In this course, we will be analyzing text using the tidyverse and related packages.
+
+### Loading packages
+To start using the *tidyverse*, you first need to load its packages using the `library()` function. Instead of loading each package separately, you can load the core collection of *tidyverse* packages using `library(tidyverse)`. A list of the packages that are loaded and ready to use is printed for us. Here you can see *dplyr* and *ggplot2*, along with a number of other packages.
+
+```{r}
+library(tidyverse)
+```
+
+### Importing review data
+One of the packages we loaded was readr. You can use the `read_csv()` function to import data into R. Here we read in a comma-separated value (or CSV) file and assign it to review_data. If you print out review_data, you can see in the first line that the data is stored as a tibble, which is a type of data frame used by the tidyverse and related packages. You can see that there are 1,833 rows. You can also see that there are four columns: the date the review was written, the product being reviewed, the star rating each reviewer gave the product, and the review itself.
+
+```{r}
+review_data <- read_csv("Roomba Reviews.csv")
+review_data
+```
+
+### Using filter() and summarize()
+Let’s compute the average star rating for one of the products. To do this, we first pipe review_data into the `filter()` verb. We use the double equals to tell R we want this to be a comparison and put quotes around the name of the product that we want to keep reviews for. In this case we only want the rows where the product column is equal to the 650 Roomba model. We then pipe this filtered data frame into the `summarize()` verb and call the `mean()` function on the stars column and assign it to a new column called stars_mean using a single equals sign. This creates a new data frame composed of a single row and column with the average star rating for the 650 Roomba model.
+
+```{r}
+review_data %>%
+  filter(Product == "iRobot Roomba 650 for Pets") %>%
+  summarise(stars_mean = mean(Stars))
+```
+
+### Using group_by() and summarize()
+We could repeat this process to compute the average star rating for other products, or we can just use the `group_by()` function in place of `filter()`. Here we use `group_by()` to specify which column defines the groups and pipe this into `summarize()`. The average star rating for the two products is nearly identical.
+
+```{r}
+review_data %>%
+  group_by(Product) %>%
+  summarize(review_mean = mean(Stars))
+```
+
+### Unstructured data
+We might naively try to similarly summarize the review column with a mean() and get an error. Text is data like the star rating, but it’s currently unstructured. We’ll need to add structure before we can analyze it.
+
+```{r}
+review_data %>%
+  group_by(Product) %>%
+  summarize(review_mean = mean(Review))
+```
+
+## Counting categorical data
+Grouped summaries are powerful for exploring and wrangling data. The groups are naturally defined by categorical data with summaries like mean(), max(), and min() used on numeric data. But what if you want to summarize categorical data? This is an important question because text data is categorical.
+
+### Column types
+Let’s look again at review_data. Another benefit of a tibble, the type of data frame shared across the tidyverse and related packages, is that each column has both a name and a type clearly listed. Here you can see that the stars column is of type <dbl> or double, meaning the column is filled with numeric data. Another column type you’ve probably seen is <int> or integer, which is just whole numbers. You can also see that both the product and review columns are of type <chr> or character, which is one way that categorical data is stored.
+
+```{r}
+review_data
+```
+
+### Summarizing with n()
+The basic summary of categorical data is a count. We can get a count of categorical data by summarizing with a function simply called `n()`. `n()` computes the number of rows in the current group. Here we are summarizing the number of rows for a single group, the entire dataset, so we get 1,833 rows. Note that we didn’t need any argument for `n()`, it’s simply counting the number of rows for the data we’ve piped into `summarize()`.
+
+```{r}
+review_data %>%
+  summarize(number_rows = n())
+```
+
+Now if we combine `n()` with `group_by()`, we can easily count the number of rows for each product. Here we see there are about twice as many rows or reviews for the 880 Roomba model than the 650 model.
+
+```{r}
+review_data %>% 
+  group_by(Product) %>% 
+  summarize(number_rows = n())
+```
+
+### Summarizing with count()
+If that seems like a lot of work to just get a count, you’re right. Instead of a grouped summary using `n()`, we can use `count()`. Here we count the number of rows for each product directly. You can see that this is identical to the grouped summary using `n()`. The one difference is that the column with the actual counts is named n by default, a reference to the fact that the `n()` function is being used by `count()` in the background.
+
+```{r}
+review_data %>%
+  count(Product)
+```
+
+While this two-row data frame is easy enough to read, we often want to `arrange()` the output by a certain value. By default, `arrange()` is in ascending order. To get descending order, we wrap the `desc()` helper function in a call to `arrange()`. Here we are arranging the data frame in descending order by n, the count of rows for each product as output by the `count()` function.
+
+```{r}
+review_data %>% 
+  count(Product) %>% 
+  arrange(desc(n))
+```
+
+## Tokenizing and cleaning
+You can count categorical data, but the text is still unstructured. We need a way to impose structure on the text, preferably in a way that is consistent with tidyverse principles so we can continue to use the functions we know and love.
+
+### Using tidytext
+The tidytext package does just that. Developed by Julia Silge and David Robinson, the tidytext package provides a suite of powerful tools that allow us to quickly and easily structure text and analyze it, taking full advantage of the tidyverse for text analysis.
+
+```{r}
+library(tidytext)
+```
+
+### Tokenizing text
+We impose structure on text by splitting each review into separate words. In natural language processing or NLP circles, this is called a bag of words. We don’t care about the syntax or structure of the reviews, we’re simply cutting out each word in each review and mixing them up in a bag: a bag of words! Each separate body of text is a document; in this case, the reviews. Each unique word is known as a term. Every occurrence of a term known as a token; thus cutting up documents into words is known as tokenizing.
+
+### Using unnest_tokens()
+After loading the tidytext package, tokenizing is as simple as using the `unnest_tokens()` function. After specifying the input data frame, we provide the name of the column of words we're creating by tokenizing followed by the name of the column with the text we want to tokenize. In review_data that is the review column. Instead of a column with a review in each row, we now have a column with a single word in each row. As a bonus, `unnest_tokens()` has done some cleaning for us: punctuation is gone, each word is lowercase, and white space has been removed. Having a single word per row means the total number of rows in the dataset has exploded from 1,833 to 229,481.
+
+```{r}
+tidy_review <- review_data %>%
+  unnest_tokens(word, Review)
+
+tidy_review
+```
+
+
+### Counting words
+Now that we have imposed a tidy structure on the text, we can count words using the `count()` function. To make it easy to read the counts, we again use the `arrange()` verb, and the `desc()` helper function. You shouldn’t be surprised to see that the most commonly used words are just common words like “the” that doesn’t give much insight into the content of the reviews. We need to do some additional cleaning before our word counts will be informative.
+
+```{r}
+tidy_review %>%
+  count(word) %>%
+  arrange(desc(n))
+```
+
+### Using anti_join()
+These common and uninformative words are known as stop words and we’d like to remove them from our tidied data frame. A set of functions in dplyr comes in handy. These are known as joins, and as the name suggests, they are used to join two data frames together based on one or more matching columns. The join we want is called an `anti_join()`. In an `anti_join()`, a row in the data frame on the left is retained as long as the value in the matching column isn’t shared by the data frame on the right.
+
+Let’s illustrate this with review_data. A data frame of common stop words is available in the tidytext package as stop_words. If we pipe the tokenized review_data into `anti_join()`, so that the tokenized review data is the left data frame and stop_words is the right data frame, you can see that the number of rows has been drastically reduced.
+
+```{r}
+tidy_review2 <- review_data %>% 
+  unnest_tokens(word, Review) %>% 
+  anti_join(stop_words)
+
+tidy_review2
+```
+
+### Counting words again
+After again computing the counts and arranging them in descending order, we can now see that the most commonly used words in the product reviews reflect actual informative content.
+
+```{r}
+tidy_review2 %>%
+  count(word) %>%
+  arrange(desc(n))
+```
+
+
+
+
